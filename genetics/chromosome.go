@@ -1,11 +1,10 @@
 package genetics
 
 import (
-	"fmt"
 	"math/rand"
 )
 
-const(
+const (
 	ChromosomeSize = 100
 
 	MaxUint = ^uint(0)
@@ -14,45 +13,45 @@ const(
 	MinInt  = -MaxInt - 1
 )
 
-type Chromosome struct{
+type Chromosome struct {
 	Distribution [ChromosomeSize]uint8
-	Counts [3]int
-	Values [3]int
+	Counts       [3]int
+	Values       [3]int
 }
 
-func (chromosome *Chromosome) Mutation(){
+func (chromosome *Chromosome) Mutation() {
 	random := rand.Intn(ChromosomeSize)
 	randomSibling := rand.Intn(3)
-	
+
 	chosenSibling := chromosome.Distribution[random]
 	chosenGround := GroundData[random]
 
 	chromosome.Values[chosenSibling] -= chosenGround
 	chromosome.Counts[chosenSibling]--
-	
+
 	chromosome.Values[randomSibling] += chosenGround
 	chromosome.Counts[randomSibling]++
-	
-	chromosome.Distribution[random] = uint8(randomSibling)	
+
+	chromosome.Distribution[random] = uint8(randomSibling)
 }
 
-func CrossOver(male, female *Chromosome) Chromosome{
+func CrossOver(male, female *Chromosome) Chromosome {
 	var chrom = Chromosome{}
-	for i := 0; i<ChromosomeSize/2; i++{
-		chrom.Distribution[i] = male.Distribution[i]	
+	for i := 0; i < ChromosomeSize/2; i++ {
+		chrom.Distribution[i] = male.Distribution[i]
 	}
-	for i := ChromosomeSize/2; i<ChromosomeSize; i++{
-		chrom.Distribution[i] = female.Distribution[i]	
+	for i := ChromosomeSize / 2; i < ChromosomeSize; i++ {
+		chrom.Distribution[i] = female.Distribution[i]
 	}
-	
+
 	//for i := 0; i<ChromosomeSize; i += 2{
-	//	chrom.Distribution[i] = male.Distribution[i]	
+	//	chrom.Distribution[i] = male.Distribution[i]
 	//	chrom.Distribution[i+1] = female.Distribution[i+1]
 	//}
 
-	for i := 0; i<ChromosomeSize; i++{
+	for i := 0; i < ChromosomeSize; i++ {
 		sibling := chrom.Distribution[i]
-		switch sibling{
+		switch sibling {
 		case 0:
 			chrom.Counts[0]++
 			chrom.Values[0] += GroundData[i]
@@ -66,11 +65,10 @@ func CrossOver(male, female *Chromosome) Chromosome{
 			panic("invalid sibling...")
 		}
 	}
-	fmt.Printf("%#v", chrom)
-	return chrom	
+	return chrom
 }
 
-func RandomChromosome() Chromosome{
+func RandomChromosome() Chromosome {
 	var chrom = Chromosome{}
 	for i := 0; i < ChromosomeSize; i++ {
 		randomSibling := rand.Intn(100)
